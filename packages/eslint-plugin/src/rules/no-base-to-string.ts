@@ -8,14 +8,16 @@ enum Usefulness {
   Always = 'always',
   Never = 'will',
   Sometimes = 'may',
+  Function = 'function',
 }
 
 type Options = [
   {
     ignoredTypeNames?: string[];
+    rejectFunctions?: boolean;
   },
 ];
-type MessageIds = 'baseToString';
+type MessageIds = 'fnToString' | 'baseToString';
 
 export default util.createRule<Options, MessageIds>({
   name: 'no-base-to-string',
@@ -29,6 +31,7 @@ export default util.createRule<Options, MessageIds>({
     messages: {
       baseToString:
         "'{{name}}' {{certainty}} evaluate to '[object Object]' when stringified.",
+      fnToString: "'{{name}}' is a function and should not be stringified.",
     },
     schema: [
       {
@@ -68,6 +71,17 @@ export default util.createRule<Options, MessageIds>({
         return;
       }
 
+      if (certainty === Usefulness.Function) {
+        context.report({
+          data: {
+            name: context.getSourceCode().getText(node),
+          },
+          messageId: 'fnToString',
+          node,
+        });
+        return;
+      }
+
       context.report({
         data: {
           certainty,
@@ -81,6 +95,10 @@ export default util.createRule<Options, MessageIds>({
     function collectToStringCertainty(type: ts.Type): Usefulness {
       const toString = checker.getPropertyOfType(type, 'toString');
       const declarations = toString?.getDeclarations();
+      const callSignatures = type.getCallSignatures();
+      if (option.rejectFunctions && callSignatures.length > 0) {
+        return Usefulness.Function;
+      }
       if (!toString || !declarations || declarations.length === 0) {
         return Usefulness.Always;
       }
