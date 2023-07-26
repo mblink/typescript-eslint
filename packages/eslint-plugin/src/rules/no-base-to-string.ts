@@ -43,6 +43,9 @@ export default util.createRule<Options, MessageIds>({
               type: 'string',
             },
           },
+          rejectFunctions: {
+            type: 'boolean',
+          },
         },
         additionalProperties: false,
       },
@@ -52,6 +55,7 @@ export default util.createRule<Options, MessageIds>({
   defaultOptions: [
     {
       ignoredTypeNames: ['Error', 'RegExp', 'URL', 'URLSearchParams'],
+      rejectFunctions: false,
     },
   ],
   create(context, [option]) {
