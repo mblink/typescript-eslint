@@ -246,5 +246,59 @@ tag\`\${{}}\`;
         },
       ],
     },
+    {
+      code: '`${() => {}})`;',
+      options: [{ rejectFunctions: true }],
+      errors: [
+        {
+          data: {
+            name: '() => {}',
+          },
+          messageId: 'fnToString',
+        },
+      ],
+    },
+    {
+      code: '(() => {}).toString();',
+      options: [{ rejectFunctions: true }],
+      errors: [
+        {
+          data: {
+            name: '() => {}',
+          },
+          messageId: 'fnToString',
+        },
+      ],
+    },
+    {
+      code: `
+        const fn = () => {};
+        \`\${fn})\`;
+      `,
+      options: [{ rejectFunctions: true }],
+      errors: [
+        {
+          data: {
+            name: 'fn',
+          },
+          messageId: 'fnToString',
+        },
+      ],
+    },
+    {
+      code: `
+        const fn = () => {};
+        fn.toString();
+      `,
+      options: [{ rejectFunctions: true }],
+      errors: [
+        {
+          data: {
+            name: 'fn',
+          },
+          messageId: 'fnToString',
+        },
+      ],
+    },
   ],
 });
