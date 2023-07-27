@@ -11,7 +11,7 @@ The default Object `.toString()` returns `"[object Object]"`, which is often not
 This rule reports on stringified values that aren't primitives and don't define a more useful `.toString()` method.
 
 > Note that `Function` provides its own `.toString()` that returns the function's code.
-> Functions are not flagged by this rule, unless the option `rejectFunctions` is passed.
+> Functions are not flagged by this rule, unless the option `rejectFunctions` is set to `true`.
 
 ## Examples
 
@@ -76,7 +76,7 @@ let text = `${value}`;
 
 ### `rejectFunctions`
 
-A boolean value indicating whether or not to catch functions with the rule. If `true`, it will throw errors when attempting to call `toString()` on a function or otherwise convert the function to string (e.g. `${() => {}}`).
+A boolean value indicating whether or not to flag functions with the rule. If `true`, it will flag any attempt to call `toString()` on a function, including template strings (e.g. `${() => {}}`).
 
 ## When Not To Use It
 
